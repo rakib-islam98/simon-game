@@ -54,7 +54,14 @@ function animatePress(currentColor) {
     },100);
 }
 
-$(document).on("keydown",function() {
+// $(document).on("keydown",function() {
+//     if(level===0) {
+//         nextSequence();
+//         changeLevelTitle();
+//     }  
+// });
+
+$(".start-btn").on("click",function() {
     if(level===0) {
         nextSequence();
         changeLevelTitle();
@@ -70,8 +77,9 @@ function checkAnswer(userChosenColor,ind){
         }
     }
     else {
-        //animation 
-        $("#level-title").text("Game Over, Press Any Key to Restart");
+        // animation 
+        // $("#level-title").text("Game Over, Press Start Again");
+        $("#level-title").text("Game Over, Press Any ");
         var audio=new Audio("./sounds/wrong.mp3");
         audio.play();
         $("body").addClass("game-over");
