@@ -1,92 +1,86 @@
-var buttonColors=["red","blue","green","yellow"];
-var gamePattern=[];
-var userPattern=[];
-var level=0;
-
-function nextSequence() {
-    var randNum=Math.floor(Math.random()*4);
-    var randChosenColor=buttonColors[randNum];
-    gamePattern.push(randChosenColor);
-
-    level+=1;
-    var audio=new Audio("./sounds/new-level.mp3");
-    if(level!=1) {
-        audio.play();
-    }
-    changeLevelTitle();
-
-    setTimeout(() => {
-        //button animation
-        $(`#${randChosenColor}`).addClass("system-pressed");
-        setTimeout(function(){
-            $(`#${randChosenColor}`).removeClass("system-pressed");
-        },100);
-        playSound(randChosenColor);
-    },1500);
+body {
+  text-align: center;
+  background-color: #011F3F;
 }
 
-function changeLevelTitle(){
-    //Level change with animation
-    $('#level-title').fadeOut(500, function() {       //old takes 500ms to fade out after that callback function is called
-        $(this).text("Level "+level); 
-        $(this).fadeIn(500); 
-    });
-}
-//User click
-$(".btn").on("click",function(){
-   var userChosenColor=this.id;
-   userPattern.push(userChosenColor);
-   playSound(userChosenColor);
-   animatePress(userChosenColor);
-   checkAnswer(userChosenColor,userPattern.length-1);
-   //console.log("user:"+userPattern)
-});
-
-function playSound(name) {
-    var audio=new Audio(`./sounds/${name}.mp3`);
-    audio.play();
+#level-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 3rem;
+  margin:  5%;
+  color: #FEF2BF;
 }
 
-function animatePress(currentColor) {
-    $(`#${currentColor}`).addClass("pressed");
-    setTimeout(function(){
-        $(`#${currentColor}`).removeClass("pressed");
-    },100);
+.container {
+  display: block;
+  width: 50%;
+  margin: auto;
+
 }
 
-// $(document).on("keydown",function() {
-//     if(level===0) {
-//         nextSequence();
-//         changeLevelTitle();
-//     }  
-// });
+.btn {
+  margin: 25px;
+  display: inline-block;
+  height: 200px;
+  width: 200px;
+  border: 10px solid black;
+  border-radius: 20%;
+}
 
-$(".start-btn").on("click",function() {
-    if(level===0) {
-        nextSequence();
-        changeLevelTitle();
-    }  
-});
+.btn-reset {
+  background: radial-gradient(circle at 30% 30%, #00e5ff, #0072ff);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 0 15px #00e5ff, 0 0 30px #0072ff;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 1px;
+}
 
-function checkAnswer(userChosenColor,ind){
-    if(gamePattern[ind]===userChosenColor) {
-        if(gamePattern.length===userPattern.length)
-        {
-            nextSequence();
-            userPattern=[];
-        }
-    }
-    else {
-        // animation 
-        // $("#level-title").text("Game Over, Press Start Again");
-        $("#level-title").text("Game Over, Press Any ");
-        var audio=new Audio("./sounds/wrong.mp3");
-        audio.play();
-        $("body").addClass("game-over");
-        setTimeout(()=>{$("body").removeClass("game-over");},200);
-        //reset
-        level=0;
-        gamePattern=[];
-        userPattern=[];
-    }
+.btn-reset:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px #00e5ff, 0 0 50px #0072ff;
+}
+
+.game-over {
+  background-color: red;
+  opacity: 0.8;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.pressed {
+  box-shadow: 0 0 20px white;
+  background-color: grey;
+}
+
+.pressed {
+  box-shadow: 0 0 20px white;
+  background-color: grey;
+  transform: scale(0.95);          /* slight shrink effect on press */
+  transition: all 0.1s ease;       /* smooth transition */
+}
+
+.system-pressed {
+  box-shadow: 0 0 15px #00ff00;  /* green glow instead of white */
+  background-color: grey;      /* different background */
+  transform: scale(0.95);          /* slight shrink effect on press */
+  transition: all 0.1s ease;       /* smooth transition */
 }
