@@ -1,0 +1,84 @@
+var buttonColors=["red","blue","green","yellow"];
+var gamePattern=[];
+var userPattern=[];
+var level=0;
+
+function nextSequence() {
+    var randNum=Math.floor(Math.random()*4);
+    var randChosenColor=buttonColors[randNum];
+    gamePattern.push(randChosenColor);
+
+    level+=1;
+    var audio=new Audio("./sounds/new-level.mp3");
+    if(level!=1) {
+        audio.play();
+    }
+    changeLevelTitle();
+
+    setTimeout(() => {
+        //button animation
+        $(`#${randChosenColor}`).addClass("system-pressed");
+        setTimeout(function(){
+            $(`#${randChosenColor}`).removeClass("system-pressed");
+        },100);
+        playSound(randChosenColor);
+    },1500);
+}
+
+function changeLevelTitle(){
+    //Level change with animation
+    $('#level-title').fadeOut(500, function() {       //old takes 500ms to fade out after that callback function is called
+        $(this).text("Level "+level); 
+        $(this).fadeIn(500); 
+    });
+}
+//User click
+$(".btn").on("click",function(){
+   var userChosenColor=this.id;
+   userPattern.push(userChosenColor);
+   playSound(userChosenColor);
+   animatePress(userChosenColor);
+   checkAnswer(userChosenColor,userPattern.length-1);
+   //console.log("user:"+userPattern)
+});
+
+function playSound(name) {
+    var audio=new Audio(`./sounds/${name}.mp3`);
+    audio.play();
+}
+
+function animatePress(currentColor) {
+    $(`#${currentColor}`).addClass("pressed");
+    setTimeout(function(){
+        $(`#${currentColor}`).removeClass("pressed");
+    },100);
+}
+
+$(document).on("keydown",function() {
+    if(level===0) {
+        nextSequence();
+        changeLevelTitle();
+    }  
+});
+
+function checkAnswer(userChosenColor,ind){
+    if(gamePattern[ind]===userChosenColor) {
+        if(gamePattern.length===userPattern.length)
+        {
+            nextSequence();
+            userPattern=[];
+        }
+    }
+    else {
+        //animation 
+        $("#level-title").text("Game Over, Press Any Key to Restart");
+        var audio=new Audio("./sounds/wrong.mp3");
+        audio.play();
+        $("body").addClass("game-over");
+        setTimeout(()=>{$("body").removeClass("game-over");},200);
+        //reset
+        level=0;
+        gamePattern=[];
+        userPattern=[];
+    }
+}
